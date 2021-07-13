@@ -57,4 +57,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="C++大作业任务书、报告模板及评分标准.doc">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
