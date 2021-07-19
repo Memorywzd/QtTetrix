@@ -2,8 +2,10 @@
 
 #include <QBasicTimer>
 #include <QFrame>
-#include <QPointer>
 #include "tetrixcube.h"
+
+const int blockNumH = 20;
+const int blockNumW = 10;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -11,59 +13,68 @@ QT_END_NAMESPACE
 
 class TetrixLogic : public QFrame
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	TetrixLogic(QWidget* parent = 0);
+    TetrixLogic(QWidget* parent = 0);
+    //QBasicTimer run_timer;
+    void setNextCubeLabel(QLabel* label)
+    {
+        nextCubeLabel = label;
+    }
 
-	void setNextPieceLabel(QLabel* label);
-	QSize sizeHint() const override;
-	QSize minimumSizeHint() const override;
-
-public 
-slots:
-	void start();
-	void pause();
+public slots:
+    void start();
+    void pause();
 
 signals:
-	void scoreChanged(int score);
-	void levelChanged(int level);
-	void linesRemovedChanged(int numLines);
+    void scoreChanged(int score);
+    void levelChanged(int level);
+    void removedLinesChanged(int lines);
 
 protected:
-	void paintEvent(QPaintEvent* event) override;
-	void keyPressEvent(QKeyEvent* event) override;
-	void timerEvent(QTimerEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void timerEvent(QTimerEvent* event) override;
 
 private:
-    enum { BoardWidth = 10, BoardHeight = 22 };
-
-    TetrixShape& shapeAt(int x, int y) { return board[(y * BoardWidth) + x]; }
-    int timeoutTime() { return 1000 / (1 + level); }
-    int squareWidth() { return contentsRect().width() / BoardWidth; }
-    int squareHeight() { return contentsRect().height() / BoardHeight; }
-    void clearBoard();
-    void dropDown();
-    void oneLineDown();
-    void pieceDropped(int dropHeight);
+    void createCube();
+    bool move(const TetrixCube&, int, int);
+    void initArea();
+    void cubeFall(int flag = 0);
     void removeFullLines();
-    void newPiece();
-    void showNextPiece();
-    bool tryMove(const TetrixCube& newCube, int newX, int newY);
-    void drawSquare(QPainter& painter, int x, int y, TetrixShape shape);
-
-    QBasicTimer timer;
-    QPointer<QLabel> nextPieceLabel;
+    void toBottom();
+    void painteBlock(QPainter&, int, int, TetrixShape, int flag = 1);
+    void promptNextCube();
+    void promptBottom();
+    bool proMove(const TetrixCube&, int, int);
+    
+    int blockUnitWidth()
+    {
+        return contentsRect().width() / blockNumW;
+    }
+    int blockUnitHeight()
+    {
+        return contentsRect().height() / blockNumH;
+    }
+    
     bool isStarted;
     bool isPaused;
-    bool isWaitingAfterLine;
-    TetrixCube curCube;
-    TetrixCube nextCube;
-    int curX;
-    int curY;
-    int numLinesRemoved;
-    int numPiecesDropped;
+    int removedLines;
     int score;
     int level;
-    TetrixShape board[BoardWidth * BoardHeight];
+    int refresh_time = 1000;
+    int cubeX;
+    int cubeY;
+    int bottomX;
+    int bottomY;
+    QBasicTimer game_timer;
+    TetrixCube cubeNow;
+    TetrixCube cubeNext;
+    TetrixCube cubeBottom;
+    TetrixShape blocks_shape[blockNumH * blockNumW];
+    QLabel* nextCubeLabel;
 };
+//游戏区域定义为Area，其中包括若干不同shape的cube
+//每个cube有4个block
+//每个block均含有一对坐标存储于key_points[2]数组

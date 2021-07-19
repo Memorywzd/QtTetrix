@@ -1,7 +1,8 @@
 #pragma once
 
-#include <QtWidgets/QMainWindow>
-#include "ui_tetrixui.h"
+#include <QFrame>
+#include <QWidget>
+//#include "ui_tetrixui.h"
 
 QT_BEGIN_NAMESPACE
 class QLCDNumber;
@@ -10,20 +11,19 @@ class QPushButton;
 QT_END_NAMESPACE
 class TetrixLogic;
 
-class TetrixUI : public QMainWindow
+class TetrixUI : public QWidget
 {
     Q_OBJECT
 
 public:
-    TetrixUI(QWidget *parent = Q_NULLPTR);
+    TetrixUI();
 
 private:
-    Ui::TetrixUIClass ui;
-
+    //Ui::TetrixUIClass ui;
     QLabel* createLabel(const QString& text);
 
     TetrixLogic* logic;
-    QLabel* nextPieceLabel;
+    QLabel* nextCubeLabel;
     QLCDNumber* scoreLcd;
     QLCDNumber* levelLcd;
     QLCDNumber* linesLcd;

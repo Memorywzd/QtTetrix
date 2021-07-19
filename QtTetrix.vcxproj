@@ -89,7 +89,12 @@
     <QtUic Include="tetrixui.ui" />
     <QtMoc Include="tetrixui.h" />
     <ClCompile Include="tetrixcube.cpp" />
-    <ClCompile Include="tetrixlogic.cpp" />
+    <ClCompile Include="tetrixlogic.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="tetrixui.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
