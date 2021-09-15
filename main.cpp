@@ -1,6 +1,5 @@
 #include "tetrixui.h"
 #include <QtWidgets>
-#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {

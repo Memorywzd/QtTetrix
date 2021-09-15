@@ -1,14 +1,12 @@
 #pragma once
 
-#include <QFrame>
-#include <QWidget>
+
+
 //#include "ui_tetrixui.h"
 
-QT_BEGIN_NAMESPACE
-class QLCDNumber;
-class QLabel;
-class QPushButton;
-QT_END_NAMESPACE
+#include <qlcdnumber.h>
+#include <qlabel.h>
+#include <qpushbutton.h>
 class TetrixLogic;
 
 class TetrixUI : public QWidget

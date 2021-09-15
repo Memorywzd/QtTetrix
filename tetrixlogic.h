@@ -41,7 +41,7 @@ private:
     void createCube();
     bool move(const TetrixCube&, int, int);
     void initArea();
-    void cubeFall(int flag = 0);
+    void cubeFall();
     void removeFullLines();
     void toBottom();
     void painteBlock(QPainter&, int, int, TetrixShape, int flag = 1);

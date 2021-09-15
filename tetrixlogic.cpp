@@ -25,6 +25,7 @@ void TetrixLogic::createCube()
     promptNextCube();
     cubeX = blockNumW / 2;
     cubeY = blockNumH - 1 + cubeNow.minY();
+    promptBottom();
 
     if (!move(cubeNow, cubeX, cubeY))
     {
@@ -48,7 +49,7 @@ bool TetrixLogic::move(const TetrixCube& newCube, int newX, int newY)
     cubeNow = newCube;
     cubeX = newX;
     cubeY = newY;
-    update();
+    //update();
     return true;
 }
 
@@ -99,7 +100,7 @@ void TetrixLogic::pause()
 //    game_timer.stop();
 }
 
-void TetrixLogic::cubeFall(int flag)
+void TetrixLogic::cubeFall()
 {
     for (int i = 0; i < 4; ++i)
     {
@@ -107,8 +108,13 @@ void TetrixLogic::cubeFall(int flag)
         int y = cubeY - cubeNow.key_point_y(i);
         blocks_shape[(y * blockNumW) + x] = cubeNow.shape();
     }
-    removeFullLines();
-    if(flag)createCube();
+    bool flag1 = move(cubeNow, cubeX, cubeY - 1);
+    if (!flag1)
+    {
+        removeFullLines();
+        createCube();
+    }
+        
 }
 
 void TetrixLogic::removeFullLines()
@@ -133,8 +139,7 @@ void TetrixLogic::removeFullLines()
                 for (int j = 0; j < blockNumW; j++)
                     blocks_shape[(k * blockNumW) + j] = blocks_shape[((k + 1) * blockNumW) + j];
             }
-            for (int j = 0; j < blockNumW; ++j)
-                blocks_shape[((blockNumH - 1) * blockNumW) + j] = NoShape;
+           
         }
     }
     if (numFullLines > 0)
@@ -196,7 +201,7 @@ void TetrixLogic::promptBottom()
         if (!proMove(cubeBottom, bottomX, newY - 1))break;
         newY--;
     }
-    repaint();
+    update();
 }
 
 void TetrixLogic::painteBlock(QPainter& painter, int x, int y, TetrixShape shape, int flag)
@@ -283,21 +288,26 @@ void TetrixLogic::keyPressEvent(QKeyEvent* event)
     {
     case Qt::Key_Left:
         move(cubeNow, cubeX - 1, cubeY);
+        promptBottom();
         break;
     case Qt::Key_Right:
         move(cubeNow, cubeX + 1, cubeY);
+        promptBottom();
         break;
     case Qt::Key_Down:
         move(cubeNow.rotateRight(), cubeX, cubeY);
+        promptBottom();
         break;
     case Qt::Key_Up:
         move(cubeNow.rotateLeft(), cubeX, cubeY);
+        promptBottom();
         break;
     case Qt::Key_Space:
         toBottom();
         break;
     case Qt::Key_D:
         move(cubeNow, cubeX, cubeY - 1);
+        promptBottom();
         break;
     default:
         QFrame::keyPressEvent(event);
@@ -309,8 +319,8 @@ void TetrixLogic::timerEvent(QTimerEvent* event)
     if (event->timerId() == game_timer.timerId())
     {
         if (!move(cubeNow, cubeX, cubeY - 1))
-            cubeFall(1);
-        promptBottom();
+            cubeFall();
+        update();
         qDebug() << "timerEvent(): move.";
     }
     else
